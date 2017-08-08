@@ -119,6 +119,8 @@ static ccnl_cache_strategy_func _cs_remove_func = NULL;
  */
 static int _ccnl_suite = CCNL_SUITE_NDNTLV;
 
+extern int rx_counter;
+
 /**
  * @}
  */
@@ -464,6 +466,7 @@ void
 
         switch (m.type) {
             case GNRC_NETAPI_MSG_TYPE_RCV:
+                rx_counter++;
                 DEBUGMSG(DEBUG, "ccn-lite: GNRC_NETAPI_MSG_TYPE_RCV received\n");
                 _receive(ccnl, &m);
                 break;
@@ -515,7 +518,7 @@ ccnl_start(void)
     _ccnl_event_loop_pid =  thread_create(_ccnl_stack, sizeof(_ccnl_stack),
                                           THREAD_PRIORITY_MAIN - 1,
                                           THREAD_CREATE_STACKTEST, _ccnl_event_loop,
-                                          &ccnl_relay, "ccnl");
+                                          &ccnl_relay, "ccnl_thread");
     return _ccnl_event_loop_pid;
 }
 

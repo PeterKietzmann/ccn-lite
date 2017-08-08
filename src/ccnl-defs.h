@@ -59,8 +59,14 @@
 # define CCNL_DEFAULT_MAX_PIT_ENTRIES    (-1)
 #endif
 
+/* In RIOT, if you intend to request the same content item multiple times,
+   and you don't want to get it from the cache but rather resend an Interest,
+   you can set this value to 0 */
 #define CCNL_CONTENT_TIMEOUT            300 // sec
-#define CCNL_INTEREST_TIMEOUT           40  // sec
+#define CCNL_INTEREST_TIMEOUT           12  // sec
+/* Wen determening the rate of unsatisfied Interests, you don't want the
+   network layer to retransmit the Interest. In that case, set this value
+   to 0 */
 #define CCNL_MAX_INTEREST_RETRANSMIT    3 //20
 
 // #define CCNL_FACE_TIMEOUT    60 // sec

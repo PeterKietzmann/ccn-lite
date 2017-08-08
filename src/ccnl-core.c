@@ -51,6 +51,8 @@ int ccnl_i_prefixof_c(struct ccnl_prefix_s *prefix, int minsuffix,
 
 struct ccnl_prefix_s* ccnl_prefix_new(int suite, int cnt);
 
+int retransmission=0;
+
 // ----------------------------------------------------------------------
 // addresses, interfaces and faces
 
@@ -1009,6 +1011,7 @@ ccnl_do_ageing(void *ptr, void *dummy)
             char *s = NULL;
             DEBUGMSG_CORE(DEBUG, " retransmit %d <%s>\n", i->retries,
                      (s = ccnl_prefix_to_path(i->pkt->pfx)));
+            retransmission++;
             ccnl_free(s);
 #ifdef USE_NFN
             if (i->flags & CCNL_PIT_COREPROPAGATES){

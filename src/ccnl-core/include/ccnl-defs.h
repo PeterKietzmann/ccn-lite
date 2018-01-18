@@ -58,8 +58,11 @@
 # define CCNL_MAX_NAME_COMP              64
 # define CCNL_DEFAULT_MAX_PIT_ENTRIES    (-1)
 #endif
-
+#ifndef CONSUMER
 #define CCNL_CONTENT_TIMEOUT            300 // sec
+#else
+#define CCNL_CONTENT_TIMEOUT            5 // sec
+#endif
 #define CCNL_INTEREST_TIMEOUT           21  // sec
 #define CCNL_MAX_INTEREST_RETRANSMIT    7
 

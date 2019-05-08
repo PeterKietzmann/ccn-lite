@@ -434,12 +434,18 @@ ccnl_interest_propagate(struct ccnl_relay_s *ccnl, struct ccnl_interest_s *i)
             }
             if (fwd->face) {
                 ccnl_send_pkt(ccnl, fwd->face, i->pkt);
+
+                // only print fwd here
+                if (i->from != loopback_face) {
+                    print_fwd_interest();
+                }
             }
 #if defined(USE_RONR)
             matching_face = 1;
 #endif
         } else {
             DEBUGMSG_CORE(DEBUG, "  no matching fib entry found\n");
+            print_send_drop_interest();
         }
     }
 
@@ -685,6 +691,8 @@ ccnl_content_serve_pending(struct ccnl_relay_s *ccnl, struct ccnl_content_s *c)
                          pi->face->faceid, (void*) c->pkt);
 
                 ccnl_send_pkt(ccnl, pi->face, c->pkt);
+
+                print_fwd_data();
 
 
             } else {// upcall to deliver content to local client

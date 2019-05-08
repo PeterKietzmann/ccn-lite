@@ -35,6 +35,8 @@
 #include "evtimer.h"
 #include "evtimer_msg.h"
 
+#include "net/netstats.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -150,6 +152,11 @@ extern kernel_pid_t ccnl_event_loop_pid;
 #ifndef CCNL_THREAD_PRIORITY
 #define CCNL_THREAD_PRIORITY (THREAD_PRIORITY_MAIN - 1)
 #endif
+
+/**
+ * @brief Local loopback face
+ */
+extern struct ccnl_face_s *loopback_face;
 
 /**
  * Struct holding CCN-Lite's central relay information
@@ -342,6 +349,108 @@ static inline void ccnl_riot_interest_remove(evtimer_t *et, struct ccnl_interest
 {
     evtimer_del(et, (evtimer_event_t *)&i->evtmsg_retrans);
     evtimer_del(et, (evtimer_event_t *)&i->evtmsg_timeout);
+}
+
+extern uint32_t app_send_interest;
+extern uint32_t fwd_interest;
+extern uint32_t retrans_send_interest;
+extern uint32_t send_drop_interest;
+extern uint32_t recv_interest;
+extern uint32_t cs_send_data;
+extern uint32_t fwd_data;
+extern uint32_t recv_data;
+extern uint32_t recv_drop_data;
+extern uint32_t app_recv_data;
+extern uint32_t netdev_evt_tx_noack;
+
+// i/d = interest/data
+// t/r: transmit/receive
+// a/f: application/forwarder
+
+// send interest
+static inline void print_app_send_interest(void) {
+    puts("print_app_send_interest");
+    app_send_interest++;
+}
+
+static inline void print_fwd_interest(void) {
+    puts("print_fwd_interest");
+    fwd_interest++;
+}
+
+static inline void print_retrans_send_interest(void) {
+    puts("print_retrans_send_interest");
+    retrans_send_interest++;
+}
+
+static inline void print_send_drop_interest(void) {
+    puts("print_send_drop_interest");
+    send_drop_interest++;
+}
+
+// receive interest
+static inline void print_recv_interest(void) {
+    puts("print_recv_interest");
+    recv_interest++;
+}
+
+// send data
+static inline void print_cs_send_data(void) {
+    puts("print_cs_send_data");
+    cs_send_data++;
+}
+
+static inline void print_fwd_data(void) {
+    puts("print_fwd_data");
+    fwd_data++;
+}
+
+static inline void print_recv_drop_data(void) {
+    puts("print_recv_drop_data");
+    recv_drop_data++;
+}
+
+// receive data
+static inline void print_recv_data(void) {
+    puts("print_recv_data");
+    recv_data++;
+}
+
+static inline void print_app_recv_data(void) {
+    puts("print_app_recv_data");
+    app_recv_data++;
+}
+
+static inline void print_accumulated_stats(void) {
+    netstats_t *stats;
+    gnrc_netif_t *netif;
+
+    netif = gnrc_netif_iter(NULL);
+    gnrc_netapi_get(netif->pid, NETOPT_STATS, NETSTATS_LAYER2, &stats,
+        sizeof(&stats));
+
+    printf("STATS;%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";"
+      "%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";"
+      "%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";\n",
+        app_send_interest,
+        fwd_interest,
+        retrans_send_interest,
+        recv_interest,
+        send_drop_interest,
+        cs_send_data,
+        fwd_data,
+        recv_drop_data,
+        recv_data,
+        app_recv_data,
+        stats->rx_count,
+        stats->rx_bytes,
+        stats->tx_unicast_count,
+        stats->tx_mcast_count,
+        stats->tx_bytes,
+        stats->tx_success,
+        stats->tx_failed,
+        netdev_evt_tx_noack
+    );
 }
 
 #ifdef __cplusplus

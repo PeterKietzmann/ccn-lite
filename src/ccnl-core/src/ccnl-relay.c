@@ -436,8 +436,11 @@ ccnl_interest_propagate(struct ccnl_relay_s *ccnl, struct ccnl_interest_s *i)
                 ccnl_send_pkt(ccnl, fwd->face, i->pkt);
 
                 // only print fwd here
-                if (i->from != loopback_face) {
-                    print_fwd_interest();
+                if (i->from != loopback_face && i->retries == 0) {
+                    print_fwd_interest(i->pkt);
+                }
+                if(i->retries > 0) {
+                    print_retrans_send_interest(i->pkt);
                 }
             }
 #if defined(USE_RONR)

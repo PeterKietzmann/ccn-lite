@@ -370,7 +370,7 @@ ccnl_interest_retransmit(struct ccnl_relay_s *relay, struct ccnl_interest_s *ccn
     evtimer_add_msg(&ccnl_evtimer, &ccnl_int->evtmsg_retrans, ccnl_event_loop_pid);
     ccnl_int->retries++;
 
-    print_retrans_send_interest();
+    //print_retrans_send_interest(ccnl_int->pkt);
 
     ccnl_interest_propagate(relay, ccnl_int);
 }

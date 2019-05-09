@@ -79,7 +79,7 @@ ccnl_fwd_handleContent(struct ccnl_relay_s *relay, struct ccnl_face_s *from,
 
     }
 
-    print_recv_data();
+    print_recv_data((*pkt));
 
 #if defined(USE_SUITE_CCNB) && defined(USE_SIGNATURES)
 //  FIXME: mgmt messages for NDN and other suites?
@@ -112,7 +112,7 @@ ccnl_fwd_handleContent(struct ccnl_relay_s *relay, struct ccnl_face_s *from,
         // CONFORM: "A node MUST NOT forward unsolicited data [...]"
         DEBUGMSG_CFWD(DEBUG, "  removed because no matching interest\n");
 
-        print_recv_drop_data();
+        print_recv_drop_data(c->pkt);
 
         ccnl_content_free(c);
         return 0;
@@ -207,7 +207,7 @@ ccnl_fwd_handleInterest(struct ccnl_relay_s *relay, struct ccnl_face_s *from,
 
         // only if interest is not from upper layer
         if (from != loopback_face) {
-            print_recv_interest();
+            print_recv_interest((*pkt));
         }
 
 #ifndef CCNL_LINUXKERNEL
@@ -272,7 +272,7 @@ ccnl_fwd_handleInterest(struct ccnl_relay_s *relay, struct ccnl_face_s *from,
             if (from->ifndx >= 0) {
                 ccnl_send_pkt(relay, from, c->pkt);
 
-                print_cs_send_data();
+                print_cs_send_data(c->pkt);
             } else {
 #ifdef CCNL_APP_RX 
                 ccnl_app_RX(relay, c);

@@ -459,7 +459,7 @@ ccnl_interest_propagate(struct ccnl_relay_s *ccnl, struct ccnl_interest_s *i)
     }
 #endif
     if(!sent_int) {
-            print_send_drop_interest();
+            print_send_drop_interest(i->pkt);
     }
 
     return;
@@ -699,7 +699,7 @@ ccnl_content_serve_pending(struct ccnl_relay_s *ccnl, struct ccnl_content_s *c)
 
                 ccnl_send_pkt(ccnl, pi->face, c->pkt);
 
-                print_fwd_data();
+                print_fwd_data(c->pkt);
 
 
             } else {// upcall to deliver content to local client

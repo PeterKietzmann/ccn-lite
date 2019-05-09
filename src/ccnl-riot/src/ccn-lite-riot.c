@@ -317,7 +317,7 @@ ccnl_app_RX(struct ccnl_relay_s *ccnl, struct ccnl_content_s *c)
         gnrc_pktbuf_release(pkt);
     }
 
-    print_app_recv_data();
+    print_app_recv_data(c->pkt);
 
     return 0;
 }
@@ -404,9 +404,10 @@ void
             case GNRC_NETAPI_MSG_TYPE_SND:
                 DEBUGMSG(DEBUG, "ccn-lite: GNRC_NETAPI_MSG_TYPE_SND received\n");
 
-                print_app_send_interest();
-
                 pkt = (struct ccnl_pkt_s *) m.content.ptr;
+
+                print_app_send_interest(pkt);
+
                 ccnl_fwd_handleInterest(ccnl, loopback_face, &pkt, ccnl_ndntlv_cMatch);
                 ccnl_pkt_free(pkt);
                 break;

@@ -369,6 +369,7 @@ ccnl_interest_remove(struct ccnl_relay_s *ccnl, struct ccnl_interest_s *i)
     return i2;
 }
 
+bool sent_int=0;
 void
 ccnl_interest_propagate(struct ccnl_relay_s *ccnl, struct ccnl_interest_s *i)
 {
@@ -431,6 +432,7 @@ ccnl_interest_propagate(struct ccnl_relay_s *ccnl, struct ccnl_interest_s *i)
                 (fwd->tap)(ccnl, i->from, i->pkt->pfx, i->pkt->buf);
             }
             if (fwd->face) {
+                sent_int=1;
                 ccnl_send_pkt(ccnl, fwd->face, i->pkt);
 
                 // only print fwd here
@@ -443,7 +445,6 @@ ccnl_interest_propagate(struct ccnl_relay_s *ccnl, struct ccnl_interest_s *i)
 #endif
         } else {
             DEBUGMSG_CORE(DEBUG, "  no matching fib entry found\n");
-            print_send_drop_interest();
         }
     }
 
@@ -452,6 +453,9 @@ ccnl_interest_propagate(struct ccnl_relay_s *ccnl, struct ccnl_interest_s *i)
         ccnl_interest_broadcast(ccnl, i);
     }
 #endif
+    if(!sent_int) {
+            print_send_drop_interest();
+    }
 
     return;
 }

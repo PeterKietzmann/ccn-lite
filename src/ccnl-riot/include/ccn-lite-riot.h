@@ -37,6 +37,8 @@
 
 #include "net/netstats.h"
 
+#include "ps.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -451,6 +453,7 @@ static inline void print_accumulated_stats(void) {
         stats->tx_failed,
         netdev_evt_tx_noack
     );
+    ps();
 }
 
 #ifdef __cplusplus

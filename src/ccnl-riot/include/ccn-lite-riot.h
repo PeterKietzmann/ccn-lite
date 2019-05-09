@@ -354,60 +354,82 @@ extern uint32_t app_recv_data;
 extern uint32_t netdev_evt_tx_noack;
 
 // i/d = interest/data
-// t/r: transmit/receive
-// a/f: application/forwarder
+// t/v/r: transmit/receive/retransmit
+// a/f/d/c: application/forward/drop/cs hit
 
 // send interest
-static inline void print_app_send_interest(void) {
-    puts("print_app_send_interest");
+static inline void print_app_send_interest(struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+
+    // only print last tree byte of hwaddy as part of name
+    printf("ita;%lu;%s\n",(unsigned long)xtimer_now_usec64(), &s[16]);
     app_send_interest++;
 }
 
-static inline void print_fwd_interest(void) {
-    puts("print_fwd_interest");
+static inline void print_fwd_interest(struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("itf;%lu;%s\n", (unsigned long)xtimer_now_usec64(), &s[16]);
     fwd_interest++;
 }
 
-static inline void print_retrans_send_interest(void) {
-    puts("print_retrans_send_interest");
+static inline void print_retrans_send_interest(struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("irf;%lu;%s\n",(unsigned long)xtimer_now_usec64(), &s[16]);
     retrans_send_interest++;
 }
 
-static inline void print_send_drop_interest(void) {
-    puts("print_send_drop_interest");
+static inline void print_send_drop_interest(struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("itd;%lu;%s\n",(unsigned long)xtimer_now_usec64(), &s[16]);
     send_drop_interest++;
 }
 
 // receive interest
-static inline void print_recv_interest(void) {
-    puts("print_recv_interest");
+static inline void print_recv_interest(struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("ivf;%lu;%s\n",(unsigned long)xtimer_now_usec64(), &s[16]);
     recv_interest++;
 }
 
 // send data
-static inline void print_cs_send_data(void) {
-    puts("print_cs_send_data");
+static inline void print_cs_send_data(struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("dtc;%lu;%s\n",(unsigned long)xtimer_now_usec64(), &s[16]);
     cs_send_data++;
 }
 
-static inline void print_fwd_data(void) {
-    puts("print_fwd_data");
+static inline void print_fwd_data(struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("dtf;%lu;%s\n",(unsigned long)xtimer_now_usec64(), &s[16]);
     fwd_data++;
 }
 
-static inline void print_recv_drop_data(void) {
-    puts("print_recv_drop_data");
+static inline void print_recv_drop_data(struct ccnl_pkt_s *pkt) { // not yet tested
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("dvd;%lu;%s\n",(unsigned long)xtimer_now_usec64(), &s[16]);
     recv_drop_data++;
 }
 
 // receive data
-static inline void print_recv_data(void) {
-    puts("print_recv_data");
+static inline void print_recv_data(struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("dvf;%lu;%s\n",(unsigned long)xtimer_now_usec64(), &s[16]);
     recv_data++;
 }
 
-static inline void print_app_recv_data(void) {
-    puts("print_app_recv_data");
+static inline void print_app_recv_data(struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("dva;%lu;%s\n",(unsigned long)xtimer_now_usec64(), &s[16]);
     app_recv_data++;
 }
 

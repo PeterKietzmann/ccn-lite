@@ -223,6 +223,7 @@ ccnl_mkInterest(struct ccnl_prefix_s *name, ccnl_interest_opts_u *opts,
             (void) tmpend;
 
             if (!opts) {
+                default_opts.ndntlv.nonce = 0;
                 opts = &default_opts;
             }
 

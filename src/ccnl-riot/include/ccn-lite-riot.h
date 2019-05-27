@@ -365,6 +365,7 @@ extern uint32_t recv_data;
 extern uint32_t recv_drop_data;
 extern uint32_t app_recv_data;
 extern uint32_t netdev_evt_tx_noack;
+extern uint32_t discard_802154_cnt;
 
 // i/d = interest/data
 // t/v/r: transmit/receive/retransmit
@@ -383,21 +384,27 @@ static inline void print_app_send_interest(struct ccnl_pkt_s *pkt) {
 static inline void print_fwd_interest(struct ccnl_pkt_s *pkt) {
     char s[CCNL_MAX_PREFIX_SIZE];
     ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+#ifndef PRINT_LESS
     printf("itf;%lu;%s;%u;%u\n", (unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+#endif
     fwd_interest++;
 }
 
 static inline void print_retrans_send_interest(struct ccnl_pkt_s *pkt) {
     char s[CCNL_MAX_PREFIX_SIZE];
     ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+#ifndef PRINT_LESS
     printf("irf;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+#endif
     retrans_send_interest++;
 }
 
 static inline void print_send_drop_interest(struct ccnl_pkt_s *pkt) {
     char s[CCNL_MAX_PREFIX_SIZE];
     ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+#ifndef PRINT_LESS
     printf("itd;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+#endif
     send_drop_interest++;
 }
 
@@ -405,7 +412,9 @@ static inline void print_send_drop_interest(struct ccnl_pkt_s *pkt) {
 static inline void print_recv_interest(struct ccnl_pkt_s *pkt) {
     char s[CCNL_MAX_PREFIX_SIZE];
     ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+#ifndef PRINT_LESS
     printf("ivf;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+#endif
     recv_interest++;
 }
 
@@ -413,21 +422,27 @@ static inline void print_recv_interest(struct ccnl_pkt_s *pkt) {
 static inline void print_cs_send_data(struct ccnl_pkt_s *pkt) {
     char s[CCNL_MAX_PREFIX_SIZE];
     ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+#ifndef PRINT_LESS
     printf("dtc;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+#endif
     cs_send_data++;
 }
 
 static inline void print_fwd_data(struct ccnl_pkt_s *pkt) {
     char s[CCNL_MAX_PREFIX_SIZE];
     ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+#ifndef PRINT_LESS
     printf("dtf;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+#endif
     fwd_data++;
 }
 
 static inline void print_recv_drop_data(struct ccnl_pkt_s *pkt) { // not yet tested
     char s[CCNL_MAX_PREFIX_SIZE];
     ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+#ifndef PRINT_LESS
     printf("dvd;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+#endif
     recv_drop_data++;
 }
 
@@ -435,7 +450,9 @@ static inline void print_recv_drop_data(struct ccnl_pkt_s *pkt) { // not yet tes
 static inline void print_recv_data(struct ccnl_pkt_s *pkt) {
     char s[CCNL_MAX_PREFIX_SIZE];
     ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+#ifndef PRINT_LESS
     printf("dvf;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+#endif
     recv_data++;
 }
 
@@ -456,7 +473,7 @@ static inline void print_accumulated_stats(void) {
 
     printf("STATS;%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";"
       "%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";"
-      "%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";\n",
+      "%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";\n",
         app_send_interest,
         fwd_interest,
         retrans_send_interest,
@@ -474,7 +491,8 @@ static inline void print_accumulated_stats(void) {
         stats->tx_bytes,
         stats->tx_success,
         stats->tx_failed,
-        netdev_evt_tx_noack
+        netdev_evt_tx_noack,
+        discard_802154_cnt
     );
     ps();
 }

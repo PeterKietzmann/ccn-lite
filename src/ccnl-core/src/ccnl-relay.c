@@ -695,6 +695,15 @@ ccnl_content_serve_pending(struct ccnl_relay_s *ccnl, struct ccnl_content_s *c)
                     }
                 }
 
+#ifdef ALLOW_DATA_BCAST
+        uint8_t bcast={0xff};
+        struct sockaddr_ll *ll = &pi->face->peer.linklayer;
+        for (unsigned i = 0; i < ll->sll_halen; i++) {
+            memcpy(&ll->sll_addr[i], &bcast, 1);
+        }
+        // printf(" SET src=%s\n", ccnl_addr2ascii((sockunion*)&from->peer));
+#endif /* ALLOW_DATA_BCAST */
+
 #ifndef CCNL_LINUXKERNEL
                 DEBUGMSG_CFWD(INFO, "  outgoing data=<%s>%s nonce=%"PRIi32" to=%s\n",
                           ccnl_prefix_to_str(i->pkt->pfx,s,CCNL_MAX_PREFIX_SIZE),

@@ -154,8 +154,16 @@ ccnl_interest_append_pending(struct ccnl_interest_s *i,  struct ccnl_face_s *fro
             pi->last_used = CCNL_NOW();
             if (last)
                     last->next = pi;
-            else
-                    i->pending = pi;
+            else {
+#ifdef ALLOW_DATA_BCAST
+                uint8_t bcast={0xff};
+                struct sockaddr_ll *ll = &from->peer.linklayer;
+                for (unsigned i = 0; i < ll->sll_halen; i++) {
+                    memcpy(&ll->sll_addr[i], &bcast, 1);
+                }
+#endif /* ALLOW_DATA_BCAST */
+                i->pending = pi;
+            }
             return 0;
         }
 

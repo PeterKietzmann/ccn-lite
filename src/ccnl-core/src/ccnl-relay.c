@@ -846,8 +846,8 @@ ccnl_nonce_isDup(struct ccnl_relay_s *relay, struct ccnl_pkt_s *pkt)
     if(CCNL_MAX_NONCES < 0){
         struct ccnl_interest_s *i = NULL;
         for (i = relay->pit; i; i = i->next) {
-            if(ccnl_prefix_cmp(i->pkt->pfx, NULL, pkt->pfx, CMP_EXACT) &&
-               buf_equal(i->pkt->s.ndntlv.nonce, pkt->s.ndntlv.nonce)){
+//            if(ccnl_prefix_cmp(i->pkt->pfx, NULL, pkt->pfx, CMP_EXACT) &&
+if(               buf_equal(i->pkt->s.ndntlv.nonce, pkt->s.ndntlv.nonce)){
                 return 1;
             }
         }

@@ -366,6 +366,7 @@ extern uint32_t recv_drop_data;
 extern uint32_t app_recv_data;
 extern uint32_t netdev_evt_tx_noack;
 extern uint32_t discard_802154_cnt;
+extern uint32_t ccnl_dup_drop;
 
 // i/d = interest/data
 // t/v/r: transmit/receive/retransmit
@@ -473,7 +474,7 @@ static inline void print_accumulated_stats(void) {
 
     printf("STATS;%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";"
       "%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";"
-      "%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";\n",
+      "%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";%" PRIu32";",
         app_send_interest,
         fwd_interest,
         retrans_send_interest,
@@ -494,6 +495,15 @@ static inline void print_accumulated_stats(void) {
         netdev_evt_tx_noack,
         discard_802154_cnt
     );
+    for (kernel_pid_t i = KERNEL_PID_FIRST; i <= KERNEL_PID_LAST; i++) {
+        thread_t *p = (thread_t *)sched_threads[i];
+
+        if (p != NULL) {
+            printf("%lu;", (long unsigned)sched_pidlist[i].runtime_ticks);
+        }
+    }
+    printf("%" PRIu32 "\n", ccnl_dup_drop);
+
     ps();
 }
 

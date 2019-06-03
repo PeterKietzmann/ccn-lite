@@ -227,6 +227,7 @@ ccnl_fwd_handleInterest(struct ccnl_relay_s *relay, struct ccnl_face_s *from,
 
     if (ccnl_nonce_isDup(relay, *pkt)) {
     #ifndef CCNL_LINUXKERNEL
+        ccnl_dup_drop++;
         DEBUGMSG_CFWD(DEBUG, "  dropped because of duplicate nonce %"PRIi32"\n", nonce);
     #else
         DEBUGMSG_CFWD(DEBUG, "  dropped because of duplicate nonce %d\n", nonce);

@@ -23,7 +23,6 @@ set(CCNL_BASIC_FLAGS
     -DUSE_DEBUG
     -DUSE_LOGGING
 #    -DUSE_SIGNATURES
-    -DUSE_DUP_CHECK
 #    -DUSE_ECHO
     -DUSE_HMAC256
     -DUSE_STATS
@@ -80,7 +79,6 @@ add_definitions(${CCNL_PACKETFORMAT_FLAGS})
 if(CCNL_RIOT)
     set(CCNL_RIOT_FLAGS
         -DCCNL_APP_RX
-        -DUSE_DUP_CHECK
         ${RIOT_CFLAGS}
          CACHE PATH
         "CCNL RIOT flags for CCN-lite"

@@ -354,7 +354,10 @@ extern uint32_t recv_drop_data;
 extern uint32_t app_recv_data;
 extern uint32_t netdev_evt_tx_noack;
 extern uint32_t discard_802154_cnt;
+extern uint32_t discard_802154_cnt_nospace;
 extern uint32_t ccnl_dup_drop;
+extern uint32_t l2_rx_count;// peter: alternative to netstats
+extern uint32_t l2_rx_bytes;// peter: alternative to netstats
 
 // i/d = interest/data
 // t/v/r: transmit/receive/retransmit
@@ -473,8 +476,8 @@ static inline void print_accumulated_stats(void) {
         recv_drop_data,
         recv_data,
         app_recv_data,
-        stats->rx_count,
-        stats->rx_bytes,
+        l2_rx_count,// stats->rx_count,
+        l2_rx_bytes,// stats->rx_bytes,
         stats->tx_unicast_count,
         stats->tx_mcast_count,
         stats->tx_bytes,
@@ -490,7 +493,8 @@ static inline void print_accumulated_stats(void) {
             printf("%lu;", (long unsigned)sched_pidlist[i].runtime_ticks);
         }
     }
-    printf("%" PRIu32 "\n", ccnl_dup_drop);
+    printf("%" PRIu32 "", ccnl_dup_drop);
+    printf("%" PRIu32 "\n", discard_802154_cnt_nospace);
 
     ps();
 }

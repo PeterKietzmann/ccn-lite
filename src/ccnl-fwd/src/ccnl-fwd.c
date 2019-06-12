@@ -236,11 +236,13 @@ ccnl_fwd_handleInterest(struct ccnl_relay_s *relay, struct ccnl_face_s *from,
     }
 #endif
     if (local_producer(relay, from, *pkt)) {
+        puts("LOCAL PRODUCER RETURN");
         return 0;
     }
 #if defined(USE_SUITE_CCNB) && defined(USE_MGMT)
     if ((*pkt)->suite == CCNL_SUITE_CCNB && (*pkt)->pfx->compcnt == 4 &&
                                   !memcmp((*pkt)->pfx->comp[0], "ccnx", 4)) {
+        puts("defined(USE_SUITE_CCNB) && defined(USE_MGMT)");
         DEBUGMSG_CFWD(INFO, "  found a mgmt message\n");
         ccnl_mgmt(relay, (*pkt)->buf, (*pkt)->pfx, from); // use return value? // TODO uncomment
         return 0;
@@ -254,6 +256,7 @@ ccnl_fwd_handleInterest(struct ccnl_relay_s *relay, struct ccnl_face_s *from,
 #ifdef USE_MGMT
         ccnl_mgmt(relay, (*pkt)->buf, (*pkt)->pfx, from); // use return value?
 #endif
+        puts("defined(USE_SUITE_NDNTLV) && defined(USE_MGMT)");
         return 0;
     }
 #endif

@@ -68,6 +68,7 @@ ccnl_interest_new(struct ccnl_relay_s *ccnl, struct ccnl_face_s *from,
     i->last_used = CCNL_NOW();
 
     if (ccnl->pitcnt >= ccnl->max_pit_entries) {
+            puts("MAX_PIT_ENTRIES");
             ccnl_pkt_free(i->pkt);
             ccnl_free(i);
             return NULL;

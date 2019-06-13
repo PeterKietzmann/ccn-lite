@@ -505,7 +505,7 @@ static inline void print_accumulated_stats(void) {
             printf("%lu;", (long unsigned)sched_pidlist[i].runtime_ticks);
         }
     }
-    printf("%" PRIu32 "", ccnl_dup_drop);
+    printf("%" PRIu32 ";", ccnl_dup_drop);
     printf("%" PRIu32 "\n", discard_802154_cnt_nospace);
 
     ps();

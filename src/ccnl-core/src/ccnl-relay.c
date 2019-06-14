@@ -31,8 +31,6 @@
 
 #ifdef CCNL_RIOT
 #include "ccn-lite-riot.h"
-#include "thread.h"
-#include "random.h"
 #endif
 
 

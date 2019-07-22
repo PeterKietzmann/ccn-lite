@@ -350,6 +350,39 @@ ccnl_interest_retransmit(struct ccnl_relay_s *relay, struct ccnl_interest_s *ccn
         return;
     }
 
+    unsigned char _int_buf[CCNL_MAX_PACKET_SIZE];
+    size_t len, int_len, buf_len = CCNL_MAX_PACKET_SIZE;
+    uint64_t typ;
+    unsigned char *start, *data;
+    struct ccnl_pkt_s *pkt;
+
+    memset(_int_buf, '\0', CCNL_MAX_PACKET_SIZE);
+
+    ccnl_interest_opts_u default_opts;
+    default_opts.ndntlv.nonce = random_uint32();
+    default_opts.ndntlv.mustbefresh = false;
+    default_opts.ndntlv.interestlifetime = CCNL_INTEREST_TIMEOUT * 1000; // ms
+
+    ccnl_mkInterest(ccnl_int->pkt->pfx, &default_opts, _int_buf, (_int_buf + CCNL_MAX_PACKET_SIZE), &len, &buf_len);
+
+    start = _int_buf;
+    start += buf_len;
+    data = start;
+
+    if (ccnl_ndntlv_dehead(&data, &len, &typ, &int_len)  || (int_len > len) ) {
+        return;
+    }
+
+    pkt = ccnl_ndntlv_bytes2pkt(NDN_TLV_Interest, start, &data, &len);
+
+    if (!pkt) {
+        return;
+    }
+
+    /* free old pkt and bind new one to Interest */
+    ccnl_pkt_free(ccnl_int->pkt);
+    ccnl_int->pkt = pkt;
+
     ccnl_int->evtmsg_retrans.msg.type = CCNL_MSG_INT_RETRANS;
     ccnl_int->evtmsg_retrans.msg.content.ptr = ccnl_int;
     ((evtimer_event_t *)&ccnl_int->evtmsg_retrans)->offset = CCNL_INTEREST_RETRANS_TIMEOUT;

@@ -358,79 +358,70 @@ extern uint32_t netdev_evt_tx_noack;
 // t/v/r: transmit/receive/retransmit
 // a/f/d/c: application/forward/drop/cs hit
 
+#ifndef ON_NRF
+#define PRINT_NAME_OFFSET 16
+#else
+#define PRINT_NAME_OFFSET 1
+#endif
+
+static inline void print_line(char *type, struct ccnl_pkt_s *pkt) {
+    char s[CCNL_MAX_PREFIX_SIZE];
+    // only print last tree byte of hwaddy as part of name
+    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
+    printf("%s;%lu;%s;%u;%u\n", type, (unsigned long)xtimer_now_usec64(), &s[PRINT_NAME_OFFSET],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+}
+
 // send interest
 static inline void print_app_send_interest(struct ccnl_pkt_s *pkt) {
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-
-    // only print last tree byte of hwaddy as part of name
-    printf("ita;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("ita",pkt);
     app_send_interest++;
 }
 
 static inline void print_fwd_interest(struct ccnl_pkt_s *pkt) {
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-    printf("itf;%lu;%s;%u;%u\n", (unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("itf",pkt);
     fwd_interest++;
 }
 
 static inline void print_retrans_send_interest(struct ccnl_pkt_s *pkt) {
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-    printf("irf;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("irf", pkt);
     retrans_send_interest++;
 }
 
 static inline void print_send_drop_interest(struct ccnl_pkt_s *pkt) {
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-    printf("itd;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("itd", pkt);
     send_drop_interest++;
 }
 
 // receive interest
 static inline void print_recv_interest(struct ccnl_pkt_s *pkt) {
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-    printf("ivf;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("ivf", pkt);
     recv_interest++;
 }
 
 // send data
 static inline void print_cs_send_data(struct ccnl_pkt_s *pkt) {
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-    printf("dtc;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("dtc", pkt);
     cs_send_data++;
 }
 
 static inline void print_fwd_data(struct ccnl_pkt_s *pkt) {
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-    printf("dtf;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("dtf", pkt);
     fwd_data++;
 }
 
 static inline void print_recv_drop_data(struct ccnl_pkt_s *pkt) { // not yet tested
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-    printf("dvd;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("dvd", pkt);
     recv_drop_data++;
 }
 
 // receive data
 static inline void print_recv_data(struct ccnl_pkt_s *pkt) {
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-    printf("dvf;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("dvf", pkt);
     recv_data++;
 }
 
 static inline void print_app_recv_data(struct ccnl_pkt_s *pkt) {
-    char s[CCNL_MAX_PREFIX_SIZE];
-    ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
-    printf("dva;%lu;%s;%u;%u\n",(unsigned long)xtimer_now_usec64(), &s[16],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+    print_line("dva", pkt);
     app_recv_data++;
 }
 

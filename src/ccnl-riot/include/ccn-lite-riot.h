@@ -365,10 +365,15 @@ extern uint32_t netdev_evt_tx_noack;
 #endif
 
 static inline void print_line(char *type, struct ccnl_pkt_s *pkt) {
+#if 0
     char s[CCNL_MAX_PREFIX_SIZE];
     // only print last tree byte of hwaddy as part of name
     ccnl_prefix_to_str(pkt->pfx, s, CCNL_MAX_PREFIX_SIZE);
     printf("%s;%lu;%s;%u;%u\n", type, (unsigned long)xtimer_now_usec64(), &s[PRINT_NAME_OFFSET],ccnl_relay.pitcnt, ccnl_relay.contentcnt);
+#else
+    (void)type;
+    (void)pkt;
+#endif
 }
 
 // send interest
